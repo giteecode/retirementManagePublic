@@ -1,0 +1,19 @@
+// 导航划过阴影
+.navbar-bg-hover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 12px;
+  transition: all 0.3s;
+
+  &:hover {
+    background-color: #f6f6f6;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .svg-icon {
+    outline: none;
+  }
+}

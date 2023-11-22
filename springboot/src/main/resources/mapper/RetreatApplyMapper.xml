@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.RetreatApplyMapper">
+    <select id="listRetreatApplyByKey" resultType="com.ew.gerocomium.dao.vo.PageRetreatByKeyVo">
+        SELECT
+        ra.id AS apply_id,
+        e.id AS elder_id,
+        e.`name` AS elder_name,
+        e.sex AS elder_sex,
+        e.id_num AS id_num,
+        b.`name` AS bed_name,
+        ra.apply_flag AS apply_flag
+        FROM
+        retreat_apply ra
+        LEFT JOIN elder e ON e.id = ra.elder_id
+        LEFT JOIN bed b ON b.id = e.bed_id
+        <where>
+            e.id IS NOT NULL
+            <if test="keyQuery.elderName != null and keyQuery.elderName != '' and keyQuery.elderName != 'null'">
+                AND e.name LIKE concat('%', #{keyQuery.elderName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.elderSex != null and keyQuery.elderSex != '' and keyQuery.elderSex != 'null'">
+                AND e.sex = #{keyQuery.elderSex}
+            </if>
+            <if test="keyQuery.idNum != null and keyQuery.idNum != '' and keyQuery.idNum != 'null'">
+                AND e.id_num LIKE concat('%', #{keyQuery.idNum,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.bedName != null and keyQuery.bedName != '' and keyQuery.bedName != 'null'">
+                AND b.name LIKE concat('%', #{keyQuery.bedName,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="listRetreatAuditByKey" resultType="com.ew.gerocomium.dao.vo.PageRetreatByKeyVo">
+        SELECT
+        ra.id AS apply_id,
+        e.id AS elder_id,
+        e.`name` AS elder_name,
+        e.sex AS elder_sex,
+        e.id_num AS id_num,
+        b.`name` AS bed_name,
+        ra.apply_flag AS apply_flag
+        FROM
+        retreat_apply ra
+        LEFT JOIN elder e ON e.id = ra.elder_id
+        LEFT JOIN bed b ON b.id = e.bed_id
+        <where>
+            ra.apply_flag = '待审核'
+            AND e.check_flag = '退住审核'
+            <if test="keyQuery.elderName != null and keyQuery.elderName != '' and keyQuery.elderName != 'null'">
+                AND e.name LIKE concat('%', #{keyQuery.elderName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.elderSex != null and keyQuery.elderSex != '' and keyQuery.elderSex != 'null'">
+                AND e.sex = #{keyQuery.elderSex}
+            </if>
+            <if test="keyQuery.idNum != null and keyQuery.idNum != '' and keyQuery.idNum != 'null'">
+                AND e.id_num LIKE concat('%', #{keyQuery.idNum,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

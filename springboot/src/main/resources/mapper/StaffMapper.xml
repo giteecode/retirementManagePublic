@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.StaffMapper">
+
+    <select id="listStaffByKey" resultType="com.ew.gerocomium.dao.vo.PageStaffByKeyVo">
+        SELECT
+        s.id,
+        s.`name`,
+        r.`name` AS role_name,
+        s.id_num,
+        s.sex,
+        s.phone,
+        s.email,
+        s.leave_flag
+        FROM
+        staff s
+        LEFT JOIN role r ON r.id = s.role_id
+        <where>
+            r.id != 1
+            AND s.leave_flag = 'N'
+            <if test="keyQuery.roleId != null">
+                AND r.id = #{keyQuery.roleId}
+            </if>
+            <if test="keyQuery.name != null and keyQuery.name != '' and keyQuery.name != 'null'">
+                AND s.name LIKE concat('%', #{keyQuery.name,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.phone != null and keyQuery.phone != '' and keyQuery.phone != 'null'">
+                AND s.phone LIKE concat('%', #{keyQuery.phone,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

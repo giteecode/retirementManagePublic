@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.OutboundRecordMapper">
+
+    <select id="listOutboundRecordByKey" resultType="com.ew.gerocomium.dao.vo.PageOutboundRecordByKeyVo">
+        SELECT `or`.id,
+        w.`name` AS warehouse_name,
+        `or`.outbound_date,
+        `or`.material_use,
+        `or`.recipient_id,
+        `or`.recipient_type,
+        s.`name` AS staff_name,
+        `or`.outbound_flag
+        FROM outbound_record `or`
+        LEFT JOIN warehouse w ON w.id = `or`.warehouse_id
+        LEFT JOIN staff s ON s.id = `or`.staff_id
+        <where>
+            `or`.del_flag = 'N'
+            <if test="startTime != null">
+                AND `or`.outbound_date &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND `or`.outbound_date &lt;= #{endTime}
+            </if>
+            <if test="keyQuery.warehouseName != null and keyQuery.warehouseName != '' and keyQuery.warehouseName != 'null'">
+                AND w.`name` LIKE concat('%', #{keyQuery.warehouseName,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="getOutboundRecordById" resultType="com.ew.gerocomium.dao.vo.GetOutboundRecordByIdVo">
+        SELECT `or`.id,
+               `or`.recipient_id,
+               `or`.recipient_type,
+               w.`name` AS warehouse_name,
+               `or`.outbound_date,
+               `or`.material_use,
+               s.`name` AS staff_name
+        FROM outbound_record `or`
+                 LEFT JOIN warehouse w ON w.id = `or`.warehouse_id
+                 LEFT JOIN staff s ON s.id = `or`.staff_id
+        WHERE `or`.id = #{outboundRecordId}
+    </select>
+</mapper>

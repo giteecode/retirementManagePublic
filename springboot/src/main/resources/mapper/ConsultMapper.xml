@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.ConsultMapper">
+
+    <select id="listConsultByKey" resultType="com.ew.gerocomium.dao.vo.PageConsultByKeyVo">
+        SELECT
+        c.id AS consult_id,
+        e.id AS elder_id,
+        c.`name` AS consult_name,
+        c.phone AS consult_phone,
+        e.`name` AS elder_name,
+        e.phone AS elder_phone,
+        e.sex AS sex,
+        e.age AS age,
+        c.consult_date AS consult_date,
+        so.`name` AS source_name,
+        st.`name` AS staff_name
+        FROM
+        consult c
+        LEFT JOIN elder e ON c.elder_id = e.id
+        LEFT JOIN source so ON so.id = c.source_id
+        LEFT JOIN staff st ON st.id = c.staff_id
+        <where>
+            e.check_flag = '咨询中'
+            <if test="keyQuery.sourceId != null">
+                AND so.id = #{keyQuery.sourceId}
+            </if>
+            <if test="keyQuery.staffId != null">
+                AND st.id = #{keyQuery.staffId}
+            </if>
+            <if test="startTime != null">
+                AND c.consult_date &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND c.consult_date &lt;= #{endTime}
+            </if>
+            <if test="keyQuery.consultName != null and keyQuery.consultName != '' and keyQuery.consultName != 'null'">
+                AND c.name LIKE concat('%', #{keyQuery.consultName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.consultPhone != null and keyQuery.consultPhone != '' and keyQuery.consultPhone != 'null'">
+                AND c.phone LIKE concat('%', #{keyQuery.consultPhone,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.elderName != null and keyQuery.elderName != '' and keyQuery.elderName != 'null'">
+                AND e.name LIKE concat('%', #{keyQuery.elderName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.elderPhone != null and keyQuery.elderPhone != '' and keyQuery.elderPhone != 'null'">
+                AND e.phone LIKE concat('%', #{keyQuery.elderPhone,jdbcType=VARCHAR}, '%')
+            </if>
+            ORDER BY
+            c.consult_date DESC
+        </where>
+    </select>
+    <select id="getConsultByConsultIdAndElderId"
+            resultType="com.ew.gerocomium.dao.vo.GetConsultByConsultIdAndElderIdVo">
+        SELECT c.id AS consult_id,
+        e.id AS elder_id,
+        c.source_id AS source_id,
+        c.staff_id AS staff_id,
+        c.`name` AS consult_name,
+        c.phone AS consult_phone,
+        c.relation AS relation,
+        c.consult_date AS consult_date,
+        c.consult_content AS consult_content,
+        e.`name` AS elder_name,
+        e.id_num AS id_num,
+        e.age AS age,
+        e.sex AS sex,
+        e.phone AS elder_phone,
+        e.address AS address
+        FROM consult c
+        LEFT JOIN elder e ON c.elder_id = e.id
+        <where>
+            c.id = #{idQuery.consultId}
+            AND e.id = #{idQuery.elderId}
+        </where>
+    </select>
+</mapper>

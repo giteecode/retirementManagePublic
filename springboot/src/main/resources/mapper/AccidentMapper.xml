@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.AccidentMapper">
+
+    <select id="listAccidentByKeyVo" resultType="com.ew.gerocomium.dao.vo.PageAccidentByKeyVo">
+        SELECT
+        a.id,
+        e.`name` AS elder_name,
+        s.`name` AS staff_name,
+        a.occur_date
+        FROM
+        accident a
+        LEFT JOIN elder e ON e.id = a.elder_id
+        LEFT JOIN staff s ON s.id = a.staff_id
+        <where>
+            a.del_flag = 'N'
+            <if test="keyQuery.elderName != null and keyQuery.elderName != '' and keyQuery.elderName != 'null'">
+                AND e.name LIKE concat('%', #{keyQuery.elderName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.staffName != null and keyQuery.staffName != '' and keyQuery.staffName != 'null'">
+                AND s.name LIKE concat('%', #{keyQuery.staffName,jdbcType=VARCHAR}, '%')
+            </if>
+            ORDER BY
+            a.occur_date DESC
+        </where>
+    </select>
+    <select id="getAccidentById" resultType="com.ew.gerocomium.dao.vo.GetAccidentByIdVo">
+        SELECT a.id,
+               e.`name` AS elder_name,
+               a.staff_id,
+               a.occur_date,
+               a.description,
+               a.picture
+        FROM accident a
+                 LEFT JOIN elder e ON e.id = a.elder_id
+        WHERE a.id = #{accidentId}
+    </select>
+</mapper>

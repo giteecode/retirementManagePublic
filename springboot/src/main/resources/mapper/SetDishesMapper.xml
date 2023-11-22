@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.SetDishesMapper">
+
+    <select id="listSetDishesBySetId" resultType="com.ew.gerocomium.dao.vo.GetCateringSetByIdVo$SetDishesVo">
+        SELECT d.id,
+               d.`name`,
+               d.price
+        FROM set_dishes sd
+                 LEFT JOIN dishes d ON d.id = sd.dishes_id
+        WHERE sd.set_id = #{setId}
+          AND d.del_flag = 'N'
+    </select>
+</mapper>

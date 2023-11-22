@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.WarehouseMaterialMapper">
+
+    <select id="sumWarehouseMaterialNumByWarehouseId" resultType="java.lang.Long">
+        SELECT sum(wm.warehouse_num)
+        FROM warehouse_material wm
+                 LEFT JOIN warehouse_record wr ON wr.id = wm.warehouse_record_id
+        WHERE wr.warehouse_id = #{warehouseId}
+          AND wr.warehouse_flag = '已通过'
+          AND wr.del_flag = 'N'
+          AND wm.inventory > 0
+          AND wm.expire_date > now()
+    </select>
+    <select id="listWarehouseMaterialByWarehouseRecordIdList" resultType="com.ew.gerocomium.dao.base.DropDown">
+        SELECT
+        wm.warehouse_record_id AS id,
+        m.`name`
+        FROM warehouse_material wm
+        LEFT JOIN material m ON m.id = wm.material_id
+        <where>
+            wm.id IS NOT NULL
+            <choose>
+                <when test="warehouseRecordIdList != null and warehouseRecordIdList.size() > 0">
+                    AND
+                    <foreach collection="warehouseRecordIdList" item="warehouseRecordId" index="index"
+                             open="(" separator=" " close=")">
+                        <if test="index != 0">or</if>
+                        wm.warehouse_record_id = #{warehouseRecordId}
+                    </foreach>
+                </when>
+                <otherwise>
+                    AND
+                    wm.id IS NULL
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+    <select id="listWarehouseMaterialByWarehouseRecordId"
+            resultType="com.ew.gerocomium.dao.vo.GetWarehouseRecordByIdVo$GetWarehouseMaterialByIdVo">
+        SELECT m.`name` AS material_name,
+               wm.warehouse_num,
+               wm.product_date,
+               wm.expire_date
+        FROM warehouse_material wm
+                 LEFT JOIN material m ON m.id = wm.material_id
+        WHERE wm.warehouse_record_id = #{warehouseRecordId}
+    </select>
+    <select id="listWarehouseMaterialByKey" resultType="com.ew.gerocomium.dao.vo.PageWarehouseMaterialByKeyVo">
+        SELECT
+        wm.id,
+        m.`name` AS material_name,
+        m.price,
+        wm.warehouse_num,
+        wm.inventory,
+        wm.expire_date
+        FROM
+        warehouse_material wm
+        LEFT JOIN warehouse_record wr ON wr.id = wm.warehouse_record_id
+        LEFT JOIN material m ON m.id = wm.material_id
+        <where>
+            wm.inventory > 0
+            AND wr.warehouse_flag = '已通过'
+            AND wr.del_flag = 'N'
+            AND wr.warehouse_id = #{keyQuery.warehouseId}
+            <if test="keyQuery.materialName != null and keyQuery.materialName != '' and keyQuery.materialName != 'null'">
+                AND m.`name` LIKE concat('%', #{keyQuery.materialName,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="listInventoryByKey" resultType="com.ew.gerocomium.dao.vo.PageInventoryByKeyVo">
+        SELECT w.`name` AS warehouse_name,
+        m.id AS material_id,
+        m.`name` AS material_name,
+        wm.warehouse_num,
+        wm.inventory,
+        (warehouse_num - wm.inventory) AS outbound_num,
+        m.price
+        FROM warehouse_material wm
+        LEFT JOIN material m ON m.id = wm.material_id
+        LEFT JOIN warehouse_record wr ON wr.id = wm.warehouse_record_id
+        LEFT JOIN warehouse w ON w.id = wr.warehouse_id
+        <where>
+            wr.warehouse_flag = '已通过'
+            AND wr.del_flag = 'N'
+            <if test="keyQuery.warehouseId != null">
+                AND wr.warehouse_id = #{keyQuery.warehouseId}
+            </if>
+            <if test="keyQuery.materialName != null and keyQuery.materialName != '' and keyQuery.materialName != 'null'">
+                AND m.`name` LIKE concat('%', #{keyQuery.materialName,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

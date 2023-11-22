@@ -1,0 +1,15 @@
+// 卡片数字
+.large-card-font {
+  @apply font-semibold text-2xl;
+  color: rgb(41, 137, 255);
+}
+
+// 字体颜色
+.text-main {
+  color: #cecece;
+}
+
+// 默认边框颜色
+.border-main {
+  border: #cfcfcf solid 1px;
+}

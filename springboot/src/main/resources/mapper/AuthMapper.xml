@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.AuthMapper">
+
+    <select id="listAuthByRoleId" resultType="com.ew.gerocomium.dao.po.Auth">
+        SELECT id,
+               url
+        FROM auth
+        WHERE id IN (
+            SELECT auth_id
+            FROM role_auth
+            WHERE role_id = #{roleId})
+    </select>
+</mapper>

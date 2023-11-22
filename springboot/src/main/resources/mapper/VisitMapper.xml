@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.VisitMapper">
+
+    <select id="listVisitByKey" resultType="com.ew.gerocomium.dao.vo.PageVisitByKeyVo">
+        SELECT
+        v.id,
+        e.`name` AS elder_name,
+        v.`name` AS visit_name,
+        v.phone AS visit_phone,
+        v.relation,
+        v.visit_flag,
+        v.visit_date,
+        v.leave_date,
+        v.visit_num
+        FROM
+        visit v
+        LEFT JOIN elder e ON e.id = v.elder_id
+        <where>
+            v.del_flag = 'N'
+            <if test="keyQuery.elderName != null and keyQuery.elderName != '' and keyQuery.elderName != 'null'">
+                AND e.name LIKE concat('%', #{keyQuery.elderName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.visitName != null and keyQuery.visitName != '' and keyQuery.visitName != 'null'">
+                AND v.name LIKE concat('%', #{keyQuery.visitName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.visitPhone != null and keyQuery.visitPhone != '' and keyQuery.visitPhone != 'null'">
+                AND v.phone LIKE concat('%', #{keyQuery.visitPhone,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.visitFlag != null and keyQuery.visitFlag != '' and keyQuery.visitFlag != 'null'">
+                AND v.visit_flag = #{keyQuery.visitFlag}
+            </if>
+            ORDER BY
+            v.visit_date DESC
+        </where>
+    </select>
+    <select id="getVisitById" resultType="com.ew.gerocomium.dao.vo.GetVisitByIdVo">
+        SELECT v.id,
+               e.`name` AS elder_name,
+               v.`name` AS visit_name,
+               v.phone  AS visit_phone,
+               v.relation,
+               v.visit_date,
+               v.visit_num
+        FROM visit v
+                 LEFT JOIN elder e ON e.id = v.elder_id
+        WHERE v.id = #{visitId}
+    </select>
+</mapper>

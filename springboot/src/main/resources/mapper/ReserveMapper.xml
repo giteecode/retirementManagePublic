@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.ReserveMapper">
+
+    <select id="listReserveByKey" resultType="com.ew.gerocomium.dao.vo.PageReserveByKeyVo">
+        SELECT r.id AS reserve_id,
+        e.id AS elder_id,
+        s.`name` AS staff_name,
+        b.`name` AS bed_name,
+        e.`name` AS elder_name,
+        e.sex AS elder_sex,
+        e.age AS elder_age,
+        e.id_num AS id_num,
+        r.phone AS payer_phone,
+        r.deposit AS deposit,
+        r.reserve_flag AS reserve_flag,
+        e.check_flag AS check_flag
+        FROM reserve r
+        LEFT JOIN elder e ON e.id = r.elder_id
+        LEFT JOIN bed b ON b.id = e.bed_id
+        LEFT JOIN staff s ON s.id = r.staff_id
+        <where>
+            r.id IS NOT NULL
+            <if test="keyQuery.elderName != null and keyQuery.elderName != '' and keyQuery.elderName != 'null'">
+                AND e.name LIKE concat('%', #{keyQuery.elderName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.payerPhone != null and keyQuery.payerPhone != '' and keyQuery.payerPhone != 'null'">
+                AND r.phone LIKE concat('%', #{keyQuery.payerPhone,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>
+        ORDER BY
+        r.create_time DESC
+    </select>
+    <select id="getReserveByReserveIdAndElderId"
+            resultType="com.ew.gerocomium.dao.vo.GetReserveByReserveIdAndElderIdVo">
+        SELECT
+        e.`name` AS elder_name,
+        e.id_num AS id_num,
+        e.sex AS elder_sex,
+        e.age AS elder_age,
+        e.phone AS elder_phone,
+        e.address AS elder_address,
+        b.`name` AS bed_name,
+        s.id AS staff_id,
+        r.`name` AS payer_name,
+        r.phone AS payer_phone,
+        r.due_date AS due_date,
+        r.deposit AS deposit
+        FROM
+        reserve r
+        LEFT JOIN elder e ON e.id = r.elder_id
+        LEFT JOIN bed b ON b.id = e.bed_id
+        LEFT JOIN staff s ON s.id = r.staff_id
+        <where>
+            r.id = #{idQuery.reserveId}
+            AND e.id = #{idQuery.elderId}
+        </where>
+    </select>
+    <select id="listExpireReserve" resultType="com.ew.gerocomium.dao.vo.ExpireReserveVo">
+        SELECT r.id AS reserve_id,
+               e.id AS elder_id,
+               e.check_flag,
+               b.id AS bed_id,
+               b.bed_flag
+        FROM reserve r
+                 LEFT JOIN elder e ON e.id = r.elder_id
+                 LEFT JOIN bed b ON b.id = e.bed_id
+        WHERE r.due_date &lt; #{expireTime}
+          AND r.reserve_flag = 'N'
+    </select>
+</mapper>

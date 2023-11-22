@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.NurseItemMapper">
+
+    <select id="listGradeService"
+            resultType="com.ew.gerocomium.dao.vo.GetNurseGradeByIdVo$NurseGradeServiceVo">
+        SELECT si.id,
+               si.`name`,
+               si.price,
+               si.need_date
+        FROM nurse_item ni
+                 LEFT JOIN service_item si ON si.id = ni.service_id
+        WHERE ni.grade_id = #{gradeId}
+    </select>
+</mapper>

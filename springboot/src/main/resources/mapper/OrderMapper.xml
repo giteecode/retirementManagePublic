@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.OrderMapper">
+
+    <select id="listOrderByKey" resultType="com.ew.gerocomium.dao.vo.PageOrderByKeyVo">
+        SELECT
+        o.id,
+        e.`name` AS elder_name,
+        e.phone AS elder_phone,
+        o.dine_date,
+        o.dine_type,
+        s.`name` AS staff_name,
+        o.deliver_dishes_date,
+        o.pay_amount,
+        o.order_flag
+        FROM
+        `order` o
+        LEFT JOIN elder e ON e.id = o.elder_id
+        LEFT JOIN staff s ON s.id = o.staff_id
+        <where>
+            o.id IS NOT NULL
+            <if test="keyQuery.elderName != null and keyQuery.elderName != '' and keyQuery.elderName != 'null'">
+                AND e.name LIKE concat('%', #{keyQuery.elderName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.elderPhone != null and keyQuery.elderPhone != '' and keyQuery.elderPhone != 'null'">
+                AND e.phone LIKE concat('%', #{keyQuery.elderPhone,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="getOrderById" resultType="com.ew.gerocomium.dao.vo.GetOrderByIdVo">
+        SELECT e.`name` AS elder_name,
+               e.phone  AS elder_phone,
+               o.dine_date,
+               o.dine_type,
+               s.`name` AS staff_name,
+               o.deliver_dishes_date
+        FROM `order` o
+                 LEFT JOIN elder e ON e.id = o.elder_id
+                 LEFT JOIN staff s ON s.id = o.staff_id
+        WHERE o.id = #{orderId}
+    </select>
+</mapper>

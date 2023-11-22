@@ -1,0 +1,73 @@
+.login-container {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+
+  .left-box,
+  .right-box {
+    flex: 1;
+  }
+
+  .right-box {
+    display: flex;
+    align-items: center;
+    margin-top: -90px;
+
+    .login-form ,
+    .forget-pass-form {
+      width: 360px;
+      margin-left: 50px;
+      .title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        img {
+          width: 80px;
+          height: 80px;
+        }
+        h2 {
+          color: #9193a3;
+          margin: 10px 0 15px 0;
+        }
+      }
+
+      .password-set {
+        display: flex;
+        width: 100%;
+        margin: -10px 0 10px 0;
+        justify-content: right;
+      }
+    }
+  }
+
+  .left-box {
+    position: relative;
+    width: 100%;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('~@/assets/imgs/bg.png');
+      background-repeat: no-repeat;
+      background-size: auto 100%;
+      z-index: -1;
+    }
+
+    .img {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      img {
+        width: 500px;
+      }
+    }
+  }
+}

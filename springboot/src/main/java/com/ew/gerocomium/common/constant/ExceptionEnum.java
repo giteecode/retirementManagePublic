@@ -1,0 +1,129 @@
+package com.ew.gerocomium.common.constant;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+/**
+ * 异常分类
+ */
+@Getter
+@AllArgsConstructor
+public enum ExceptionEnum {
+    // common
+    SYS_ERROR(500, "系统繁忙"),
+    NOT_EXIST(404, "资源不存在"),
+    DATA_NOT_EXIST(404, "数据不存在"),
+    METHOD_ERROR(500, "请求方式错误"),
+    PARAM_ERROR(500, "请求参数异常"),
+    ACCESS_ERROR(500, "非法访问"),
+    TOKEN_ERROR(500, "令牌无效"),
+    CERTIFICATION_ERROR(500, "认证失败"),
+    AUTH_ERROR(500, "权限不足"),
+    // 忘记密码
+    ACCOUNT_FORMAT_ERROR(500, "账号格式有误"),
+    ACCOUNT_NOT_REGISTER(500, "账号未注册"),
+    PASS_SAME(500, "新密码与原密码相同"),
+    REPEAT_SEND_CODE(500, "请勿重复发送验证码"),
+    CODE_EXPIRE(500, "验证码过期"),
+    CODE_ERROR(500, "验证码错误"),
+    // 修改密码
+    OLD_PASS_ERROR(500, "原密码错误"),
+    // 上传文件
+    UPLOAD_SUFFIX_ERROR(500, "不支持的文件后缀"),
+    // 老人
+    ELDER_ALREADY_DELETE(500, "该老人已被删除"),
+    ID_NUM_REPEAT(500, "老人身份证号已存在"),
+    BALANCE_DEFICIENCY(500, "老人余额不足"),
+    // 标签
+    LABEL_TYPE_REPEAT(500, "标签分类已存在"),
+    LABEL_TYPE_OUT(500, "标签分类总数超过限制"),
+    LABEL_NOT_NULL(500, "该标签分类存在标签，删除失败"),
+    LABEL_REPEAT(500, "标签已存在"),
+    LABEL_OUT(500, "该分类标签总数超过限制"),
+    // 来源渠道
+    SOURCE_REPEAT(500, "来源渠道已存在"),
+    // 活动分类
+    ACTIVE_TYPE_REPEAT(500, "活动分类已存在"),
+    // 活动
+    ACTIVE_REPEAT(500, "活动名称已存在"),
+    // 节点
+    NODE_MARK_NOT_EXIST(500, "该节点标记不存在"),
+    NODE_BED_NOT_IDLE(500, "该节点有床位被占用，删除失败"),
+    // 楼栋
+    BUILDING_REPEAT(500, "楼栋已存在"),
+    BUILDING_OUT(500, "楼栋总数超过限制"),
+    // 楼层
+    FLOOR_REPEAT(500, "楼层已存在"),
+    FLOOR_OUT(500, "楼层总数超过限制"),
+    // 房间类型
+    ROOM_TYPE_REPEAT(500, "房间类型已存在"),
+    // 房间
+    ROOM_REPEAT(500, "房间已存在"),
+    ROOM_OUT(500, "房间总数超过限制"),
+    // 床位
+    BED_NULL(500, "床位不存在"),
+    BED_REPEAT(500, "床位已存在"),
+    BED_OUT(500, "床位总数超过限制"),
+    BED_OCCUPY(500, "该床位被占用"),
+    BED_NOT_IDLE(500, "该床位被占用，删除失败"),
+    // 意向客户
+    ALREADY_INTENTION(500, "该老人已是意向客户"),
+    ALREADY_RESERVE(500, "该老人已预定"),
+    ALREADY_ENTER(500, "该老人已入住"),
+    // 回访计划
+    VISIT_PLAN_REPEAT(500, "回访计划标题已存在"),
+    // 预定
+    REFUND_REPEAT(500, "请勿重复退款"),
+    DUE_DATE_EXPIRE(500, "预定已过期"),
+    // 预存充值
+    NOT_ENTER(500, "该老人非入住状态，不予充值"),
+    // 员工
+    PHONE_REPEAT(500, "该手机号已存在"),
+    EMAIL_REPEAT(500, "该邮箱已存在"),
+    // 服务
+    SERVICE_TYPE_REPEAT(500, "该服务类型已存在"),
+    SERVICE_TYPE_OUT(500, "服务类型总数超过限制"),
+    SERVICE_NOT_NULL(500, "该服务类型存在服务，删除失败"),
+    SERVICE_REPEAT(500, "该服务已存在"),
+    SERVICE_OUT(500, "该类型服务总数超过限制"),
+    // 护理等级
+    NURSE_GRADE_REPEAT(500, "该护理等级已存在"),
+    NURSE_GRADE_SELECTED(500, "该护理等级已被选择，删除失败"),
+    // 菜品
+    DISHES_TYPE_REPEAT(500, "该菜品分类已存在"),
+    DISHES_TYPE_OUT(500, "菜品分类总数超过限制"),
+    DISHES_NOT_NULL(500, "该菜品分类存在菜品，删除失败"),
+    DISHES_REPEAT(500, "该菜品已存在"),
+    // 套餐
+    SET_REPEAT(500, "该套餐已存在"),
+    SET_SELECTED(500, "该套餐已被选择，删除失败"),
+    // 订单
+    ORDER_SUCCESS(500, "该订单已完成"),
+    // 菜品
+    MATERIAL_TYPE_REPEAT(500, "该物资分类已存在"),
+    MATERIAL_TYPE_OUT(500, "物资分类总数超过限制"),
+    MATERIAL_NOT_NULL(500, "该物资分类存在物资，删除失败"),
+    MATERIAL_REPEAT(500, "该物资已存在"),
+    // 仓库
+    WAREHOUSE_REPEAT(500, "该仓库已存在"),
+    WAREHOUSE_NOT_NULL(500, "该仓库存有物资，删除失败"),
+    // 出入库管理
+    AUDIT_RESULT_ERROR(500, "审核结果非法"),
+    AUDIT_REPEAT(500, "请勿重复审核"),
+    OUTBOUND_NUM_ERROR(500, "出库物资数量超过库存量"),
+    DEL_REPEAT(500, "请勿重复删除"),
+    // 外出登记
+    OUTWARD_REPEAT(500, "请勿重复登记"),
+    RECORD_ALREADY_DELETE(500, "该登记已被删除"),
+    ALREADY_RETURN(500, "请勿重复登记返回"),
+    // 来访登记
+    ALREADY_LEAVE(500, "来访人员已登记离开"),
+    // 退住申请
+    ELDER_NOT_ENTER(500, "老人暂未入住"),
+    APPLY_REPEAT(500, "请勿重复申请"),
+    // 退住审核
+    ELDER_NOT_EXIT_AUDIT(500, "老人暂未申请退住"),
+    ;
+    private final int code;
+    private final String msg;
+}

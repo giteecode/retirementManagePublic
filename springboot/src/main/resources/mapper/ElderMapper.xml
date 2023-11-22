@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.ElderMapper">
+    <select id="listDepositRechargeByKey" resultType="com.ew.gerocomium.dao.vo.PageDepositRechargeByKeyVo">
+        SELECT
+        e.id AS elder_id,
+        e.`name` AS elder_name,
+        e.phone AS elder_phone,
+        e.id_num AS id_num,
+        b.`name` AS bed_name,
+        e.balance AS balance
+        FROM
+        elder e
+        LEFT JOIN bed b ON b.id = e.bed_id
+        <where>
+            e.id IS NOT NULL
+            AND (e.check_flag = "入住" OR e.check_flag = "退住审核")
+            <if test="keyQuery.name != null and keyQuery.name != '' and keyQuery.name != 'null'">
+                AND e.name LIKE concat('%', #{keyQuery.name,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.phone != null and keyQuery.phone != '' and keyQuery.phone != 'null'">
+                AND e.phone LIKE concat('%', #{keyQuery.phone,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.idNum != null and keyQuery.idNum != '' and keyQuery.idNum != 'null'">
+                AND e.id_num LIKE concat('%', #{keyQuery.idNum,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="listElderByKey" resultType="com.ew.gerocomium.dao.vo.PageElderByKeyVo">
+        SELECT
+        e.id,
+        b.`name` AS bed_name,
+        e.`name`,
+        e.id_num,
+        e.age,
+        e.sex,
+        e.phone,
+        e.address,
+        e.check_flag
+        FROM
+        elder e
+        LEFT JOIN bed b ON b.id = e.bed_id
+        <where>
+            e.check_flag != '已失效'
+            <if test="keyQuery.elderName != null and keyQuery.elderName != '' and keyQuery.elderName != 'null'">
+                AND e.name LIKE concat('%', #{keyQuery.elderName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.idNum != null and keyQuery.idNum != '' and keyQuery.idNum != 'null'">
+                AND e.id_num LIKE concat('%', #{keyQuery.idNum,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.elderSex != null and keyQuery.elderSex != '' and keyQuery.elderSex != 'null'">
+                AND e.sex = #{keyQuery.elderSex}
+            </if>
+        </where>
+    </select>
+    <update id="cancelReserveByElderIdList">
+        UPDATE elder
+        SET bed_id = NULL,
+        check_flag = '意向跟进'
+        WHERE id in
+        <foreach collection="elderIdList" item="elderId" index="index"
+                 open="(" separator="," close=")">
+            #{elderId}
+        </foreach>
+    </update>
+    <update id="deleteElderById">
+        UPDATE elder
+        SET nursing_grade_id = NULL,
+            catering_set_id  = NULL,
+            bed_id           = NULL,
+            check_flag       = '已失效'
+        WHERE id = #{elderId}
+    </update>
+    <update id="retreatElderById">
+        UPDATE elder
+        SET nursing_grade_id = NULL,
+            catering_set_id  = NULL,
+            bed_id           = NULL,
+            check_flag       = '已退住'
+        WHERE id = #{elderId}
+    </update>
+</mapper>

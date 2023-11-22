@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.ActiveMapper">
+
+    <select id="listActiveByKey" resultType="com.ew.gerocomium.dao.vo.PageActiveByKeyVo">
+        SELECT
+        a.id,
+        t.`name` AS type_name,
+        a.theme,
+        a.`name`,
+        a.content,
+        a.address,
+        a.organizer,
+        a.phone,
+        a.active_date,
+        a.active_picture
+        FROM
+        active a
+        LEFT JOIN active_type t ON t.id = a.type_id
+        <where>
+            a.del_flag = 'N'
+            <if test="keyQuery.name != null and keyQuery.name != '' and keyQuery.name != 'null'">
+                AND a.name LIKE concat('%', #{keyQuery.name,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="keyQuery.typeId != null">
+                AND t.id = #{keyQuery.typeId}
+            </if>
+            <if test="startTime != null">
+                AND a.active_date &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND a.active_date &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
+</mapper>

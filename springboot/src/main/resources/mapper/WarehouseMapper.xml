@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.WarehouseMapper">
+
+    <select id="listWarehouseByKey" resultType="com.ew.gerocomium.dao.vo.PageWarehouseByKeyVo">
+        SELECT
+        w.id,
+        w.`name`,
+        s.`name` AS staff_name
+        FROM
+        warehouse w
+        LEFT JOIN staff s ON s.id = w.staff_id
+        <where>
+            w.del_flag = 'N'
+            <if test="keyQuery.warehouseName != null and keyQuery.warehouseName != '' and keyQuery.warehouseName != 'null'">
+                AND w.name LIKE concat('%', #{keyQuery.warehouseName,jdbcType=VARCHAR}, '%')
+            </if>
+            ORDER BY
+            w.create_time DESC
+        </where>
+    </select>
+</mapper>

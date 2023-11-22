@@ -1,0 +1,113 @@
+server:
+  port: ${PORT:9001} # 设置服务端口
+spring:
+  application:
+    name: gerocomium_service
+  web:
+    resources:
+      add-mappings: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  servlet:
+    multipart:
+      max-file-size: 300MB
+      max-request-size: 300MB
+  # 数据库配置
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/gerocomium?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+      username: root
+      password: root
+      # 初始连接数
+      initial-size: 10
+      # 最小连接数
+      min-idle: 10
+      # 最大连接数
+      max-active: 100
+      # 获取连接最大等待时间，单位毫秒
+      max-wait: 60000
+      # 可以支持PSCache（提升写入、查询效率）
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      # 间隔多久检测需要关闭的空闲连接，单位毫秒
+      time-between-eviction-runs-millis: 60000
+      # 连接最小生存时间
+      min-evictable-idle-time-millis: 300000
+      # Oracle需要打开注释
+      # validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        # login-username: job
+        # login-password: job
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: false
+        wall:
+          config:
+            multi-statement-allow: true
+  # Redis配置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+#    password: 123456
+    timeout: 10000
+    database: 1
+    jedis:
+      pool:
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1
+        # 连接池最大空闲连接
+        max-idle: 8
+        # 连接池最大连接数
+        max-active: 40
+        # 连接池最小空闲连接
+        min-idle: 0
+  # 配置Json日期格式
+  jackson:
+    default-property-inclusion: ALWAYS
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+
+# Mybatis-plus配置
+mybatis-plus:
+  # mapper xml文件路径
+  mapper-locations: classpath:mapper/*.xml
+  # 数据表实体包路径
+  type-aliases-package: com.ew.gerocomium.dao.entity.po
+  configuration:
+    # 打印sql操作记录
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+# 文件通用路径配置
+filesave:
+  windows: E:\educationProject\养老系统\retirementManage\retirementManage
+  macos: /Users/Xxx/Downloads/file/temp
+  linux: /Test/project/file/upload/
+  upload-head: http://127.0.0.1:9001
+  local-head: http://127.0.0.1:9001
+ignore:
+  # 白名单，不需要登录即可访问
+  ignoreUrl:
+    - /account/login
+    - /account/sendCode
+    - /account/forget
+    - /upload/**
+    - /download/**
+    - /doc.html
+    - /webjars/**
+    - /favicon.ico
+    - /v2/api-docs
+    - /swagger-*/**
+  # 白名单，需要登录，但不需要分配权限即可访问
+  tokenUrl:
+    - /account/edit
+    - /account/logout

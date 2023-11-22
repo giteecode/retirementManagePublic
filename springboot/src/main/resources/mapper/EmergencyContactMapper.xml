@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.EmergencyContactMapper">
+
+    <select id="listExpireContractEmergencyContactVoByElderIdList"
+            resultType="com.ew.gerocomium.dao.vo.ExpireContractEmergencyContactVo">
+        SELECT
+        e.id AS elder_id,
+        ec.email
+        FROM
+        emergency_contact ec
+        LEFT JOIN elder e ON e.id = ec.elder_id
+        <where>
+            ec.receive_flag = 'Y'
+            <choose>
+                <when test="elderIdList != null and elderIdList.size() > 0">
+                    AND
+                    <foreach collection="elderIdList" item="elderId" index="index"
+                             open="(" separator=" " close=")">
+                        <if test="index != 0">or</if>
+                        ec.elder_id = #{elderId}
+                    </foreach>
+                </when>
+                <otherwise>
+                    AND
+                    ec.id IS NULL
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+</mapper>

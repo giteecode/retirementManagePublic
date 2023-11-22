@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.ConsumeMapper">
+
+    <select id="listConsumeByKey" resultType="com.ew.gerocomium.dao.vo.PageConsumeByKeyVo">
+        SELECT
+        e.`name` AS elder_name,
+        e.id_num AS id_num,
+        c.consume_type AS consume_type,
+        c.consume_amount AS consume_amount,
+        c.consume_date AS consume_date
+        FROM
+        consume c
+        LEFT JOIN elder e ON e.id = c.elder_id
+        <where>
+            e.id IS NOT NULL
+            <if test="startTime != null">
+                AND c.consume_date &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND c.consume_date &lt;= #{endTime}
+            </if>
+            <if test="elderName != null and elderName != '' and elderName != 'null'">
+                AND e.name LIKE concat('%', #{elderName,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

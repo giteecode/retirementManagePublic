@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.ContractMapper">
+
+    <select id="listExpireContract" resultType="com.ew.gerocomium.dao.vo.ExpireContractVo">
+        SELECT e.id     AS elder_id,
+               e.`name` AS elder_name,
+               e.id_num,
+               c.end_date
+        FROM contract c
+                 LEFT JOIN elder e ON e.id = c.elder_id
+        WHERE c.end_date &lt; #{endTime}
+          AND (
+                    e.check_flag = '入住'
+                OR e.check_flag = '退住审核')
+    </select>
+</mapper>

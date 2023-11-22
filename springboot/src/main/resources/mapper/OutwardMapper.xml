@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.OutwardMapper">
+    <select id="listOutwardByKey" resultType="com.ew.gerocomium.dao.vo.PageOutwardByKeyVo">
+        SELECT o.id,
+        e.`name` as elder_name,
+        o.chaperone_name,
+        o.chaperone_phone,
+        o.chaperone_type,
+        o.outward_date,
+        o.plan_return_date,
+        o.real_return_date
+        FROM outward o
+        LEFT JOIN elder e ON e.id = o.elder_id
+        <where>
+            o.del_flag = 'N'
+            <if test="keyQuery.chaperoneType != null and keyQuery.chaperoneType != '' and keyQuery.chaperoneType != 'null'">
+                AND o.chaperone_type = #{keyQuery.chaperoneType}
+            </if>
+            <if test="startTime != null">
+                AND o.outward_date &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND o.outward_date &lt;= #{endTime}
+            </if>
+            <if test="keyQuery.elderName != null and keyQuery.elderName != '' and keyQuery.elderName != 'null'">
+                AND e.name LIKE concat('%', #{keyQuery.elderName,jdbcType=VARCHAR}, '%')
+            </if>
+            ORDER BY
+            o.create_time DESC
+        </where>
+    </select>
+    <select id="getOutwardById" resultType="com.ew.gerocomium.dao.vo.GetOutwardByIdVo">
+        SELECT o.id,
+               e.`name` AS elder_name,
+               o.chaperone_name,
+               o.chaperone_phone,
+               o.chaperone_type,
+               o.outward_date,
+               o.plan_return_date
+        FROM outward o
+                 LEFT JOIN elder e ON e.id = o.elder_id
+        WHERE o.id = #{outwardId}
+    </select>
+</mapper>

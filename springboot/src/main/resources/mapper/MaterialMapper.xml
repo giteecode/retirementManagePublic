@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ew.gerocomium.dao.mapper.MaterialMapper">
+
+    <select id="listMaterialByKey" resultType="com.ew.gerocomium.dao.vo.PageMaterialByKeyVo">
+        SELECT m.id,
+        m.`name`,
+        mt.`name` AS type_name,
+        m.price
+        FROM material m
+        LEFT JOIN material_type mt ON mt.id = m.type_id
+        <where>
+            m.del_flag = 'N'
+            <if test="keyQuery.materialTypeId != null">
+                AND m.type_id = #{keyQuery.materialTypeId}
+            </if>
+            <if test="keyQuery.materialName != null and keyQuery.materialName != '' and keyQuery.materialName != 'null'">
+                AND m.name LIKE concat('%', #{keyQuery.materialName,jdbcType=VARCHAR}, '%')
+            </if>
+            ORDER BY
+            m.create_time DESC
+        </where>
+    </select>
+</mapper>
